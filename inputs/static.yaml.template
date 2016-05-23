@@ -1,0 +1,5 @@
+node1_ip: '' 
+node2_ip: ''
+agent_user: ''
+agent_private_key_path: ''
+
