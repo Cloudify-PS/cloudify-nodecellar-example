@@ -9,6 +9,7 @@ imports:
   - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-azure-plugin/master/plugin.yaml
   - http://www.getcloudify.org/spec/diamond-plugin/1.3.3/plugin.yaml
   - types/nodecellar.yaml
+  - templates/common.yaml
 
 #####################################################################################
 # inputs section allows the user to use same
@@ -232,39 +233,7 @@ node_types:
 
 node_templates:
 
-  nodecellar:
-    type: nodecellar.nodes.NodecellarApplicationModule
-    properties:
-      port: { get_input: webserver_port }
-    relationships:
-
-      ################################
-      # Setting the mongo connection
-      ################################
-
-      - type: node_connected_to_mongo
-        target: mongod
-
-      ################################
-      # Setting the nodejs connection
-      ################################
-
-      - type: node_contained_in_nodejs
-        target: nodejs
-
-  mongod:
-    type: nodecellar.nodes.MonitoredMongoDatabase
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: mongo_host
-
-  nodejs:
-    type: nodecellar.nodes.NodeJSServer
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: nodejs_host
-
-  mongo_host:
+  mongod-host:
     type: nodecellar.nodes.MonitoredServer
     properties:
       name: {concat:[{get_input: resource_prefix},mongohost,{get_input: resource_suffix}]}
@@ -278,7 +247,7 @@ node_templates:
     - type: cloudify.azure.relationships.connected_to_nic
       target: mongo_host_nic
 
-  nodejs_host:
+  nodejs-host:
     type: nodecellar.nodes.MonitoredServer
     properties:
       name: {concat:[{get_input: resource_prefix},nodejshost,{get_input: resource_suffix}]}
@@ -485,5 +454,5 @@ outputs:
   endpoint:
     description: Web application endpoint
     value:
-      ip_address: { get_attribute: [ nodejs_host, public_ip ] }
+      ip_address: { get_attribute: [ nodejs-host, public_ip ] }
       port: { get_property: [ nodecellar, port ] }

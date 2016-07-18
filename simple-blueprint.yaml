@@ -9,6 +9,7 @@ imports:
   - http://www.getcloudify.org/spec/diamond-plugin/1.3.3/plugin.yaml
   - types/nodecellar.yaml
   - types/simple-types.yaml
+  - templates/common.yaml
 
 #####################################################################################
 # The inputs section allows the user to use same blueprint for creating different
@@ -37,53 +38,19 @@ inputs:
         Path to private key used for SSH connections to hosts
         (must be accessible by Cloudify Manager)
 
+  # Application information
+
+  webserver_port:
+    description: The external web server port
+    default: 8080
+
 node_templates:
-
-  nodecellar:
-    type: nodecellar.nodes.NodecellarApplicationModule
-    relationships:
-
-      ################################
-      # Connected to mongod node
-      ################################
-
-      - type: node_connected_to_mongo
-        target: mongod
-
-      ################################
-      # Contained in nodejs node
-      ################################
-
-      - type: node_contained_in_nodejs
-        target: nodejs
-
-  nodejs:
-    type: nodecellar.nodes.NodeJSServer
-    relationships:
-
-      ################################
-      # Contained in nodejs host
-      ################################
-
-      - type: cloudify.relationships.contained_in
-        target: nodejs_host
-
-  mongod:
-    type: nodecellar.nodes.MonitoredMongoDatabase
-    relationships:
-
-      ################################
-      # Contained in mongod host
-      ################################
-
-      - type: cloudify.relationships.contained_in
-        target: mongod_host
 
   ############
   # Hosts
   ############
 
-  nodejs_host:
+  nodejs-host:
     type: nodecellar.nodes.MonitoredServer
     properties:
       ip: { get_input: nodejs_host_ip }
@@ -91,7 +58,7 @@ node_templates:
         user: { get_input: agent_user }
         key: { get_input: agent_private_key_path }
 
-  mongod_host:
+  mongod-host:
     type: nodecellar.nodes.MonitoredServer
     properties:
       ip: { get_input: mongod_host_ip }
@@ -110,6 +77,6 @@ outputs:
   endpoint:
     description: Web application endpoint
     value:
-      ip_address: { get_property: [ nodejs_host, ip ] }
+      ip_address: { get_property: [ nodejs-host, ip ] }
       port: { get_property: [ nodecellar, port ] }
 

@@ -10,6 +10,7 @@ imports:
   - http://www.getcloudify.org/spec/diamond-plugin/1.3.3/plugin.yaml
   - types/nodecellar.yaml
   - types/vcloud-types.yaml
+  - templates/common.yaml
 
 #####################################################################################
 # inputs section allows the user to use same
@@ -58,67 +59,14 @@ inputs:
       Name of the existing network that's being used for Cloudify management
     type: string
 
+  # Application information
+
+  webserver_port:
+    description: The external web server port
+    default: 8080
+
 node_templates:
-
-  nodecellar:
-    type: nodecellar.nodes.NodecellarApplicationModule
-    properties:
-      port: 8080
-    relationships:
-
-      ################################
-      # Setting the mongo connection
-      ################################
-
-      - type: node_connected_to_mongo
-        target: mongod
-
-      ################################
-      # Setting the nodejs connection
-      ################################
-
-      - type: node_contained_in_nodejs
-        target: nodejs
-
-  nodejs:
-    type: nodecellar.nodes.NodeJSServer
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: nodejs_host
-
-  mongod:
-    type: nodecellar.nodes.MongoDatabase
-    properties:
-      port: 27017
-    interfaces:
-      cloudify.interfaces.lifecycle:
-
-        ###########################################################
-        # The MongoDBCollector depends on a python library called
-        # pymongo. We install this library in the 'configure'
-        # lifecycle hook of this node.
-        ###########################################################
-
-        configure: scripts/mongo/install-pymongo.sh
-
-      ###########################################################
-      # Notice that this node defines an additional collector
-      # to collect data on the MongoDB.
-      ###########################################################
-
-      cloudify.interfaces.monitoring:
-          start:
-            implementation: diamond.diamond_agent.tasks.add_collectors
-            inputs:
-              collectors_config:
-                MongoDBCollector:
-                  config:
-                    hosts: "localhost:27017"
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: mongod_host
-
-  nodejs_host:
+  nodejs-host:
     type: nodecellar.nodes.MonitoredServer
     relationships:
 
@@ -133,7 +81,7 @@ node_templates:
       - target: nodejs_security_group
         type: cloudify.vcloud.server_connected_to_security_group
 
-  mongod_host:
+  mongod-host:
     type: nodecellar.nodes.MonitoredServer
     relationships:
       - target: ssh_keypair

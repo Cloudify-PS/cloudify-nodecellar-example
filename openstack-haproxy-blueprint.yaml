@@ -65,13 +65,13 @@ node_templates:
     type: nodecellar.nodes.MonitoredMongoDatabase
     relationships:
       - type: cloudify.relationships.contained_in
-        target: mongod_host
+        target: mongod-host
 
   nodejs:
     type: nodecellar.nodes.NodeJSServer
     relationships:
       - type: cloudify.relationships.contained_in
-        target: nodejs_host
+        target: nodejs-host
 
   ########################################
   # Note: only ubuntu haproxy installation
@@ -86,7 +86,7 @@ node_templates:
       - target: haproxy_frontend_host
         type: cloudify.relationships.contained_in
 
-  mongod_host:
+  mongod-host:
     type: nodecellar.nodes.MonitoredServer
     relationships:
 
@@ -97,7 +97,7 @@ node_templates:
       - target: mongod_security_group
         type: cloudify.openstack.server_connected_to_security_group
 
-  nodejs_host:
+  nodejs-host:
     type: nodecellar.nodes.MonitoredServer
 
     ###########################################################
