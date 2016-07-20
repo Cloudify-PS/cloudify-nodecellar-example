@@ -30,13 +30,17 @@ inputs:
     description: >
       Flavor of the agent VM's
 
-  agent_user:
+  nodejs_agent_user:
     description: >
       User for connecting to agent VM's
 
   template_name:
     description: >
       Template to clone VMs from
+
+  mongo_agent_user:
+    description: >
+      User for connecting to agent VM's
 
   management_network:
     description: >
@@ -58,7 +62,7 @@ node_types:
     properties:
       cloudify_agent:
           default:
-            user: { get_input: agent_user }
+            user: { get_input: mongo_agent_user }
       server:
         default:
           template: { get_input: template_name }
@@ -79,7 +83,7 @@ node_types:
     properties:
       cloudify_agent:
         default:
-          user: { get_input: agent_user }
+          user: { get_input: nodejs_agent_user }
       server:
         default:
           image: { get_input: image }

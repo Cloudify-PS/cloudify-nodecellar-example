@@ -1,6 +1,7 @@
 image: ''
 flavor: ''
-agent_user: ''
+nodejs_agent_user: ''
 template_name: ''
+mongo_agent_user: ''
 management_network: ''
 external_network: ''
