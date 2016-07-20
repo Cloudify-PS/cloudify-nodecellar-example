@@ -77,6 +77,30 @@ node_types:
             - name: { get_input: external_network }
               switch_distributed: True
               external: True
+    interfaces:
+      cloudify.interfaces.monitoring_agent:
+        install:
+          implementation: diamond.diamond_agent.tasks.install
+          inputs:
+            diamond_config:
+              default:
+                interval: 1
+        start: diamond.diamond_agent.tasks.start
+        stop: diamond.diamond_agent.tasks.stop
+        uninstall: diamond.diamond_agent.tasks.uninstall
+      cloudify.interfaces.monitoring:
+        start:
+          implementation: diamond.diamond_agent.tasks.add_collectors
+          inputs:
+            collectors_config:
+              default:
+                CPUCollector: {}
+                MemoryCollector: {}
+                LoadAverageCollector: {}
+                DiskUsageCollector:
+                  config:
+                    devices: x?vd[a-z]+[0-9]*$
+                NetworkCollector: {}
 
   nodecellar.nodes.NodeJSHost:
     derived_from: cloudify.openstack.nodes.Server
@@ -88,6 +112,30 @@ node_types:
         default:
           image: { get_input: image }
           flavor: { get_input: flavor }
+    interfaces:
+      cloudify.interfaces.monitoring_agent:
+          install:
+            implementation: diamond.diamond_agent.tasks.install
+            inputs:
+              diamond_config:
+                default:
+                  interval: 1
+          start: diamond.diamond_agent.tasks.start
+          stop: diamond.diamond_agent.tasks.stop
+          uninstall: diamond.diamond_agent.tasks.uninstall
+      cloudify.interfaces.monitoring:
+          start:
+            implementation: diamond.diamond_agent.tasks.add_collectors
+            inputs:
+              collectors_config:
+                default:
+                  CPUCollector: {}
+                  MemoryCollector: {}
+                  LoadAverageCollector: {}
+                  DiskUsageCollector:
+                    config:
+                      devices: x?vd[a-z]+[0-9]*$
+                  NetworkCollector: {}
 
 node_templates:
 
