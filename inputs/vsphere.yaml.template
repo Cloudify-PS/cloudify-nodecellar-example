@@ -1,0 +1,6 @@
+template_name: ''
+agent_user: ''
+management_network: ''
+external_network: ''
+webserver_port: 8080
+
