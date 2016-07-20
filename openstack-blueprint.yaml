@@ -42,9 +42,6 @@ inputs:
 
 node_templates:
 
-  keypair:
-    type: cloudify.openstack.nodes.KeyPair
-
   mongod-host:
     type: nodecellar.nodes.MonitoredServer
     relationships:
@@ -55,8 +52,6 @@ node_templates:
 
       - target: mongod_security_group
         type: cloudify.openstack.server_connected_to_security_group
-      - target: keypair
-        type: cloudify.openstack.server_connected_to_keypair
 
   nodejs-host:
     type: nodecellar.nodes.MonitoredServer
@@ -76,8 +71,6 @@ node_templates:
 
       - target: nodecellar_security_group
         type: cloudify.openstack.server_connected_to_security_group
-      - target: keypair
-        type: cloudify.openstack.server_connected_to_keypair
 
   ###########################################################
   # A security group to enable access to the mongo host
@@ -124,12 +117,6 @@ node_templates:
 
   nodecellar_ip:
     type: cloudify.openstack.nodes.FloatingIP
-    interfaces:
-      cloudify.interfaces.lifecycle:
-        create:
-          inputs:
-            args:
-              floating_network_name: external
 
 ###########################################################
 # This outputs section exposes the application endpoint.
