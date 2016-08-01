@@ -87,7 +87,7 @@ node_templates:
     type: nodecellar.nodes.MonitoredServer
     properties:
       ip: { get_input: nodejs_host_ip }
-      agent_config:
+      cloudify_agent:
         user: { get_input: agent_user }
         key: { get_input: agent_private_key_path }
 
@@ -95,7 +95,7 @@ node_templates:
     type: nodecellar.nodes.MonitoredServer
     properties:
       ip: { get_input: mongod_host_ip }
-      agent_config:
+      cloudify_agent:
         user: { get_input: agent_user }
         key: { get_input: agent_private_key_path }
 
