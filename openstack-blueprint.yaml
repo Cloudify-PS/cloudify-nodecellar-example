@@ -10,6 +10,7 @@ imports:
   - http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml
   - types/nodecellar.yaml
   - types/openstack-types.yaml
+  - templates/common.yaml
 
 #####################################################################################
 # inputs section allows the user to use same
@@ -33,37 +34,13 @@ inputs:
     description: >
       User for connecting to agent VM's
 
+  # Application information
+
+  webserver_port:
+    description: The external web server port
+    default: 8080
+
 node_templates:
-
-  nodecellar:
-    type: nodecellar.nodes.NodecellarApplicationModule
-    relationships:
-
-      ################################
-      # Setting the mongo connection
-      ################################
-
-      - type: node_connected_to_mongo
-        target: mongod
-
-      ################################
-      # Setting the nodejs connection
-      ################################
-
-      - type: node_contained_in_nodejs
-        target: nodejs
-
-  mongod:
-    type: nodecellar.nodes.MonitoredMongoDatabase
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: mongod_host
-
-  nodejs:
-    type: nodecellar.nodes.NodeJSServer
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: nodejs_host
 
   mongod_host:
     type: nodecellar.nodes.MonitoredServer
