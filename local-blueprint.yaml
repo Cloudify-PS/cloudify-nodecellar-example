@@ -13,6 +13,12 @@ inputs:
   host_ip:
     default: localhost
 
+  # Application information
+
+  webserver_port:
+    description: The external web server port
+    default: 8080
+
 node_templates:
 
   nodecellar:

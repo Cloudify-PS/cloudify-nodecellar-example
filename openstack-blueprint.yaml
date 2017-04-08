@@ -10,6 +10,7 @@ imports:
   - http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml
   - types/nodecellar.yaml
   - types/openstack-types.yaml
+  - templates/common.yaml
 
 #####################################################################################
 # inputs section allows the user to use same
@@ -24,9 +25,11 @@ inputs:
   image:
     description: >
       Image to be used when launching agent VM's
+
   flavor:
     description: >
       Flavor of the agent VM's
+
   agent_user:
     description: >
       User for connecting to agent VM's
@@ -44,37 +47,13 @@ inputs:
       Path to the private key which will be used for connecting to the server
       on the manager or machine running CLI if running in local mode.      
 
+  # Application information
+
+  webserver_port:
+    description: The external web server port
+    default: 8080
+
 node_templates:
-
-  nodecellar:
-    type: nodecellar.nodes.NodecellarApplicationModule
-    relationships:
-
-      ################################
-      # Setting the mongo connection
-      ################################
-
-      - type: node_connected_to_mongo
-        target: mongod
-
-      ################################
-      # Setting the nodejs connection
-      ################################
-
-      - type: node_contained_in_nodejs
-        target: nodejs
-
-  mongod:
-    type: nodecellar.nodes.MonitoredMongoDatabase
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: mongod_host
-
-  nodejs:
-    type: nodecellar.nodes.NodeJSServer
-    relationships:
-      - type: cloudify.relationships.contained_in
-        target: nodejs_host
 
   mongod_host:
     type: nodecellar.nodes.MonitoredServer
@@ -165,8 +144,6 @@ node_templates:
           port: { get_property: [ mongod, port ] }
         - remote_ip_prefix: 0.0.0.0/0
           port: 28017
-        - port: 22
-          remote_ip_prefix: 0.0.0.0/0
 
   ###########################################################
   # A security group to enable access to the nodejs host
@@ -184,8 +161,6 @@ node_templates:
       rules:
         - remote_ip_prefix: 0.0.0.0/0
           port: { get_property: [ nodecellar, port ] }
-        - port: 22
-          remote_ip_prefix: 0.0.0.0/0
 
   ###########################################################
   # An ip to be attached to the nodejs host, since
