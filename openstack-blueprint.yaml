@@ -36,7 +36,7 @@ inputs:
   network_name:
     description: >
       Openstack network name the new server will be connected to
-  floating_network_id:
+  floating_network_name:
     description: >
       The id of the network to use for allocating a floating ip
   key_pair_name:
@@ -172,7 +172,7 @@ node_templates:
     type: cloudify.openstack.nodes.FloatingIP
     properties:
       floatingip:
-        floating_network_id: { get_input: floating_network_id }
+        floating_network_name: { get_input: floating_network_name }
 
   ###########################################################
   # Key pair for connecting to the VMs using SSH.
